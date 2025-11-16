@@ -8,17 +8,12 @@ import time
 
 WHATSAPP_API_KEY = os.getenv("WHATSAPP_API_KEY")
 WHATSAPP_PHONE = os.getenv("WHATSAPP_PHONE")
-DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
-
-YOUTUBE_CHANNEL_ID = os.getenv("YOUTUBE_CHANNEL_ID", "UCmbA1iv-7_GLxuqzItMf97A")  # Renzo Tavara
+YOUTUBE_CHANNEL_ID = os.getenv("YOUTUBE_CHANNEL_ID")
 TWITCH_CHANNELS = os.getenv("TWITCH_CHANNELS", "abokeito,ivanelmaster").split(",")
-
-CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL", 60))  # segundos
+CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL", 30))
 
 # Para evitar spam
-last_live_status = {
-    "youtube": False
-}
+last_live_status = {"youtube": False}
 for channel in TWITCH_CHANNELS:
     last_live_status[channel] = False
 
@@ -34,13 +29,6 @@ def send_whatsapp(msg):
     except Exception as e:
         print("Error enviando WhatsApp:", e)
 
-def send_discord(msg):
-    try:
-        r = requests.post(DISCORD_WEBHOOK, json={"content": msg})
-        print("Discord status:", r.status_code)
-    except Exception as e:
-        print("Error enviando Discord:", e)
-
 def is_youtube_live(channel_id):
     url = f"https://mixerno.space/api/youtube-channel-live-status?channelId={channel_id}"
     try:
@@ -52,7 +40,7 @@ def is_youtube_live(channel_id):
 def is_twitch_live(username):
     url = f"https://decapi.me/twitch/uptime/{username}"
     try:
-        text = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}).text
+        text = requests.get(url).text
         return "offline" not in text.lower()
     except:
         return False
@@ -70,7 +58,6 @@ while True:
         last_live_status["youtube"] = True
         msg = f"🔴 **Renzo está EN VIVO en YouTube!**\nhttps://www.youtube.com/@renzotavaramarinas770/live"
         send_whatsapp(msg)
-        send_discord(msg)
     if not youtube_live:
         last_live_status["youtube"] = False
 
@@ -81,7 +68,6 @@ while True:
             last_live_status[channel] = True
             msg = f"🟣 **{channel} está EN VIVO en Twitch!**\nhttps://twitch.tv/{channel}"
             send_whatsapp(msg)
-            send_discord(msg)
         if not twitch_live:
             last_live_status[channel] = False
 
