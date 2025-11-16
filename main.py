@@ -8,8 +8,10 @@ import time
 
 WHATSAPP_API_KEY = os.getenv("WHATSAPP_API_KEY")
 WHATSAPP_PHONE = os.getenv("WHATSAPP_PHONE")
-YOUTUBE_CHANNEL_ID = os.getenv("YOUTUBE_CHANNEL_ID")
+
+YOUTUBE_CHANNEL_ID = os.getenv("YOUTUBE_CHANNEL_ID", "UCmbA1iv-7_GLxuqzItMf97A")
 TWITCH_CHANNELS = os.getenv("TWITCH_CHANNELS", "abokeito,ivanelmaster").split(",")
+
 CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL", 30))
 
 # Para evitar spam
